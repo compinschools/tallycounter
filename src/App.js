@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import './App.css';
+
 import Tally from './Tally';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import './App.css';
 
 function App() {
   const [counters, changeCounters] = useState([]);
@@ -8,12 +14,12 @@ function App() {
 
   const generateCounters = () => {
     return counters.map((v) => (
-    <Tally 
-      tallyName={"Tally" + v.id} 
-      count={v.count}
-      startsAt={v.startsAt}
-      incrementHandler={() => incrementCounter(v.id,true)}
-      resetHandler={() => incrementCounter(v.id,false)}
+      <Tally
+        tallyName={"Tally" + v.id}
+        count={v.count}
+        startsAt={v.startsAt}
+        incrementHandler={() => incrementCounter(v.id)}
+        resetHandler={() => resetCounter(v.id)}
       />));
   }
 
@@ -29,26 +35,48 @@ function App() {
     }
   }
 
-  const incrementCounter = (theid,arg) => {
-    const updated = counters.map ( (value) => {
-      if(value.id === theid){
-        if(arg) {
-          return {id:theid, startsAt: value.startsAt, count: value.count + 1}
-        } else {
-          return {id:theid, startsAt: value.startsAt,count:value.startsAt}
-        }
-      }
-      return value;
+  const incrementCounter = (theid) => {
+    const updated = counters.map((value) => {
+      if (value.id === theid) {
+        return { id: theid, startsAt: value.startsAt, count: value.count + 1 }
+      } else {
 
+        return value;
+      }
+    })
+    changeCounters(updated);
+  }
+
+  const resetCounter = (theid) => {
+    const updated = counters.map((value) => {
+      if (value.id === theid) {
+        return { id: theid, startsAt: value.startsAt, count: value.startsAt }
+      }
+      else {
+        return value;
+      }
+    })
+    changeCounters(updated);
+  }
+
+  const resetAllCounters = () => {
+    const updated = counters.map((value) => {
+        return { id: value.id, startsAt: value.startsAt, count: value.startsAt }
     })
     changeCounters(updated);
   }
 
   return (
     <>
-      <button onClick={() => AddTally()}>Add Tally Counter</button>
-      <button onClick={() => RemoveTally()}>Remove Tally Counter</button>
-      {generateCounters()}
+      <Button onClick={() => AddTally()}>Add Tally Counter</Button>
+      <Button onClick={() => RemoveTally()}>Remove Tally Counter</Button>
+      <Button onClick={() => resetAllCounters()}>Reset All</Button>
+      <Container fluid>
+        <Row>
+          <Col>{generateCounters()}</Col>
+        </Row>
+      </Container>
+      
     </>
   );
 }
